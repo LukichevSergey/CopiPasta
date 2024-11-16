@@ -7,11 +7,15 @@
 
 import SwiftUI
 import SwiftData
+import AppKit
 
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
     @Query private var items: [Item]
 
+    let pb = NSPasteboard.general
+    @State var strings: [String] = []
+    
     var body: some View {
         NavigationSplitView {
             List {
@@ -34,6 +38,18 @@ struct ContentView: View {
             }
         } detail: {
             Text("Select an item")
+        }
+        .onPasteboardChange {
+            getClipboardText()
+        }
+    }
+    
+    private func getClipboardText() {
+        if let string = pb.string(forType: .string) {
+            if !strings.contains(string) {
+                strings.append(string)
+            }
+            print(strings)
         }
     }
 
